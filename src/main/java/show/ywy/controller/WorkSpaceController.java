@@ -1,6 +1,7 @@
 package show.ywy.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.json.JSONObject;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,8 +25,8 @@ public class WorkSpaceController {
     private WorkSpaceService workSpaceService;
 
     @PostMapping("code/invitation")
-    public Result<Boolean> isValidInvitationCode(String code) {
-        return Result.ok(workSpaceService.invitationCode(code));
+    public Result<Boolean> isValidInvitationCode(@RequestBody JSONObject code) {
+        return Result.ok(workSpaceService.invitationCode(code.getStr("code")));
     }
 
     @PostMapping("workspace/create")

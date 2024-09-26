@@ -22,3 +22,7 @@ export const intoWorkSpaceCheckApi = (link,code) => {
 export const isLoginApi = () => {
     return axios.post('workspace/isLogin')
 }
+
+export const isValidInvitationCodeApi = (code) => {
+    return axios.post('code/invitation', {code})
+}

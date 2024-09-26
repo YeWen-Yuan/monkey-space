@@ -2,10 +2,9 @@
 import {computed, reactive, defineModel, defineProps} from "vue";
 import {ElMessageBox} from "element-plus";
 import {useRoute, useRouter} from "vue-router";
-import {createApi, intoWorkSpaceCheckApi} from "@/api/workSpace.api.js";
+import {createApi, intoWorkSpaceCheckApi, isValidInvitationCodeApi} from "@/api/workSpace.api.js";
 
 let props = defineProps(['type']);
-
 
 const title = computed(() => {
   return props.type === 'create' ? '邀请码' : props.type === 'into' ? '空间码' : '未知'
@@ -24,6 +23,8 @@ const dialog = reactive({
   code: '',
   invitationCode: '',
 })
+let data = useRoute();
+let router = useRouter();
 
 
 function createSpace() {
@@ -53,7 +54,6 @@ function createSpace() {
         })
       })
       closeDialog()
-      let router = useRouter();
       router.push({
         path: '/work-space',
         query: {
@@ -63,7 +63,6 @@ function createSpace() {
     })
   } else if (props.type === 'into') {
     // 继续调用接口
-    let data = useRoute();
     intoWorkSpaceCheckApi(data.query.id, dialog.code).then(res => {
       if (res.data) {
         closeDialog()
@@ -79,12 +78,23 @@ function createSpace() {
 }
 
 function createSpaceCode() {
-  // 随机生成一个6位数的邀请码英文字母+数字
-  let code = ''
-  for (let i = 0; i < 6; i++) {
-    code += Math.random() > 0.5 ? String.fromCharCode(Math.floor(Math.random() * 26) + 65) : Math.floor(Math.random() * 10)
-  }
-  dialog.code = code
+  isValidInvitationCodeApi(dialog.invitationCode).then(res => {
+    console.log(res.data)
+    if (res.data) {
+      // 随机生成一个6位数的邀请码英文字母+数字
+      let code = ''
+      for (let i = 0; i < 6; i++) {
+        code += Math.random() > 0.5 ? String.fromCharCode(Math.floor(Math.random() * 26) + 65) : Math.floor(Math.random() * 10)
+      }
+      dialog.code = code
+    } else {
+      ElMessageBox.alert('邀请码不正确', '提示', {
+        confirmButtonText: '确定'
+      })
+      dialog.invitationCode = ''
+    }
+  })
+
 }
 
 function textFilter() {
@@ -102,6 +112,9 @@ const handleClose = (done) => {
 function closeDialog() {
   console.log('closeDialog')
   visible.value = false
+  if (props.type === 'into') {
+    router.push('/')
+  }
 }
 </script>
 
