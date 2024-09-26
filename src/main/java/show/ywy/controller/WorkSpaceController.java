@@ -2,6 +2,7 @@ package show.ywy.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONObject;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import show.ywy.entity.IntoWorkSpace;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
 
+
 import javax.annotation.Resource;
 
 import static show.ywy.result.ErrorCode.USER_LOCK;
@@ -19,10 +21,10 @@ import static show.ywy.result.ErrorCode.USER_LOCK;
  * @author yzs
  */
 @RestController
+@RequiredArgsConstructor
 public class WorkSpaceController {
 
-    @Resource
-    private WorkSpaceService workSpaceService;
+    private final WorkSpaceService workSpaceService;
 
     @PostMapping("code/invitation")
     public Result<Boolean> isValidInvitationCode(@RequestBody JSONObject code) {

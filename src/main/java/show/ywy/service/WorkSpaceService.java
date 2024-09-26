@@ -3,6 +3,7 @@ package show.ywy.service;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.RandomUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import show.ywy.config.UserConfig;
 import show.ywy.db.LinkMemory;
@@ -18,11 +19,11 @@ import java.util.List;
  * @author yzs
  */
 @Service
+@RequiredArgsConstructor
 public class WorkSpaceService {
 
 
-    @Resource
-    private UserConfig userConfig;
+    private final UserConfig userConfig;
 
     public boolean invitationCode(String code) {
         return userConfig.getCode().contains(code);

@@ -1,5 +1,6 @@
 package show.ywy.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import show.ywy.entity.Clipboard;
 import show.ywy.result.Result;
@@ -13,10 +14,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("clipboard")
+@RequiredArgsConstructor
 public class ClipboardController {
 
-    @Resource
-    private ClipboardService clipboardService;
+    private final ClipboardService clipboardService;
 
     @PostMapping("add")
     public Result<Boolean> addClipboard(@RequestBody String text) {
