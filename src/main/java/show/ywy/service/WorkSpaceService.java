@@ -56,14 +56,14 @@ public class WorkSpaceService {
     }
 
 
-    public boolean into(IntoWorkSpace intoWorkSpace) {
+    public String into(IntoWorkSpace intoWorkSpace) {
         String link = intoWorkSpace.getLink();
         String spaceUuid = LinkMemory.getInstance().get(link);
         if (spaceUuid == null) {
-            return false;
+            return "";
         }
         StpUtil.login(link + "|" + spaceUuid);
-        return true;
+        return link;
     }
 
 

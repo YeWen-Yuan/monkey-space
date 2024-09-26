@@ -15,12 +15,12 @@ export const getApi = () => {
     return axios.get('workspace/get')
 }
 
-export const intoWorkSpaceCheckApi = (link,code) => {
-    return axios.post('workspace/into',{link, code})
+export const intoWorkSpaceCheckApi = (link, code) => {
+    return axios.post('workspace/into', {link, code})
 }
 
 export const isLoginApi = (link) => {
-    return axios.post('workspace/isLogin',{
+    return axios.post('workspace/isLogin', {
         link
     })
 }
@@ -29,6 +29,6 @@ export const isValidInvitationCodeApi = (code) => {
     return axios.post('code/invitation', {code})
 }
 
-export const checkLoginKeyApi = (link,key) => {
-    return axios.post('workspace/checkLoginKey', {key,link})
+export const checkLoginKeyApi = (link, key) => {
+    return axios.post('workspace/checkLoginKey', {link, key})
 }

@@ -1,6 +1,7 @@
 package show.ywy.controller;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,8 @@ import show.ywy.entity.IntoWorkSpace;
 import show.ywy.entity.SecureTool;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
+
+import java.util.Objects;
 
 import static show.ywy.result.ErrorCode.USER_LOCK;
 
@@ -37,7 +40,7 @@ public class WorkSpaceController {
             return Result.error(USER_LOCK);
         }
         String workSpace = workSpaceService.createWorkSpace(createLink);
-        return Result.ok(JSONUtil.createObj().set("key", SecureTool.encrypt(workSpace)).set("id",workSpace));
+        return Result.ok(JSONUtil.createObj().set("key", SecureTool.encrypt(workSpace)).set("id", workSpace));
     }
 
     @PostMapping("workspace/share")
@@ -46,8 +49,11 @@ public class WorkSpaceController {
     }
 
     @PostMapping("workspace/into")
-    public Result<Boolean> into(@RequestBody IntoWorkSpace intoWorkSpace) {
-        return Result.ok(workSpaceService.into(intoWorkSpace));
+    public Result<JSONObject> into(@RequestBody IntoWorkSpace intoWorkSpace) {
+        String into = workSpaceService.into(intoWorkSpace);
+        JSONObject result = JSONUtil.createObj().set("login", StrUtil.isNotBlank(into));
+        result.set("key", SecureTool.encrypt(into));
+        return Result.ok(result);
     }
 
 
@@ -69,10 +75,12 @@ public class WorkSpaceController {
     @PostMapping("workspace/checkLoginKey")
     public Result<Boolean> checkLoginKey(@RequestBody JSONObject data) {
         String link = data.getStr("link");
-        String spaceId = LinkMemory.getInstance().get(link);
-        if (spaceId == null) {
+        String key = data.getStr("key");
+        SecureTool.decrypt(key);
+        if (Objects.equals(link, key)) {
+            return Result.ok(true);
+        } else {
             return Result.ok(false);
         }
-        return null;
     }
 }

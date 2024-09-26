@@ -66,7 +66,9 @@ function createSpace() {
   } else if (props.type === 'into') {
     // 继续调用接口
     intoWorkSpaceCheckApi(data.query.id, dialog.code).then(res => {
-      if (res.data) {
+      if (res.data.login) {
+        localStorage.setItem("key", res.data.key)
+        localStorage.setItem("hasLogin", "true")
         closeDialog()
       } else {
         ElMessageBox.alert('空间码不存在', '提示', {

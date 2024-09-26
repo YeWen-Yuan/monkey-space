@@ -37,13 +37,18 @@ function workspace(type) {
 <style scoped>
 .js {
   text-align: center;
-  margin-top: 100px;
+  margin-top: 300px;
   font-size: 20px;
 }
 
 .js div:nth-child(2) {
-  font-size: 40px;
+  font-size: 56px;
+  font-weight: bold;
   margin-bottom: 20px;
+  background-clip: text;
+  background:-webkit-linear-gradient(120deg, #bd34fe 30%, #41d1ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .op {

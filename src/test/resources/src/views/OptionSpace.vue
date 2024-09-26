@@ -2,39 +2,39 @@
 
 import FileList from "@/components/FileList.vue";
 import Clip from "@/components/Clip.vue";
-import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
 import {checkLoginKeyApi, delApi, isLoginApi} from "@/api/workSpace.api.js";
 import InfoDialog from "@/components/InfoDialog.vue";
+import {showDialog, urlCheck} from '@/assets/into.hock.js'
 import {ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
 
 let visible = ref(null);
-
-let route = useRoute();
-let data = route.query.id;
+let route = useRoute()
 let router = useRouter();
-if (!data) {
-  router.push('/')
-} else {
-  checkCanBeInfoThisPage()
-}
 
+intoCheck()
 
-function checkCanBeInfoThisPage() {
-  const isLogin = localStorage.getItem("hasLogin");
-  if (isLogin === "true") {
-    const item = localStorage.getItem("key");
-    if (item === null) {
+function intoCheck() {
+  // 判断URL是否合法
+  let access_check = urlCheck();
+  if (access_check) {
+    let access_showDialog = showDialog()
+    if (access_showDialog) {
+      // 说明localStorage中没有key + id
       visible.value = true;
     } else {
-      checkLoginKeyApi(data, item).then(res => {
+      //
+      checkLoginKeyApi(route.query.id, localStorage.getItem("key")).then(res => {
         visible.value = !(res.code !== 200 && res.data)
+        // 调用数据接口
       })
     }
   } else {
-    visible.value = true;
+    router.push('/')
   }
 }
+
 
 function isLogin() {
   isLoginApi(data).then(res => {
