@@ -54,10 +54,12 @@ function createSpace() {
         })
       })
       closeDialog()
+      localStorage.setItem("key", data.key)
+      localStorage.setItem("hasLogin", "true")
       router.push({
         path: '/work-space',
         query: {
-          id: data
+          id: data.id
         }
       })
     })

@@ -30,7 +30,6 @@ public class WorkSpaceService {
     }
 
     public String createWorkSpace(CreateLink createLink) {
-
         // code
         String spaceCode = createLink.getSpaceCode();
         // link
@@ -41,7 +40,7 @@ public class WorkSpaceService {
         WorkSpace workSpace = new WorkSpace();
         workSpace.setLinkList(ListUtil.toList(link));
         WorkSpaceMemory.getInstance().put(spaceUuid, workSpace);
-//        StpUtil.login(link + "|" + spaceUuid);
+        StpUtil.login(link + "|" + spaceUuid);
         // link
         LinkMemory.getInstance().put(link, spaceUuid);
         return link;

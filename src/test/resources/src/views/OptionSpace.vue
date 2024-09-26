@@ -4,24 +4,41 @@ import FileList from "@/components/FileList.vue";
 import Clip from "@/components/Clip.vue";
 import {useRoute, useRouter} from "vue-router";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {delApi, isLoginApi} from "@/api/workSpace.api.js";
+import {checkLoginKeyApi, delApi, isLoginApi} from "@/api/workSpace.api.js";
 import InfoDialog from "@/components/InfoDialog.vue";
 import {ref} from "vue";
 
-let visible = ref(true);
+let visible = ref(null);
 
 let route = useRoute();
 let data = route.query.id;
+let router = useRouter();
 if (!data) {
-  useRouter().push('/')
+  router.push('/')
 } else {
   checkCanBeInfoThisPage()
 }
 
 
 function checkCanBeInfoThisPage() {
-  isLoginApi().then(res => {
-    if (res.data.code === 200 && res.data) {
+  const isLogin = localStorage.getItem("hasLogin");
+  if (isLogin === "true") {
+    const item = localStorage.getItem("key");
+    if (item === null) {
+      visible.value = true;
+    } else {
+      checkLoginKeyApi(data, item).then(res => {
+        visible.value = !(res.code !== 200 && res.data)
+      })
+    }
+  } else {
+    visible.value = true;
+  }
+}
+
+function isLogin() {
+  isLoginApi(data).then(res => {
+    if (res.code === 200 && res.data) {
       // is login goto
       visible.value = false;
     } else {
@@ -40,7 +57,7 @@ function delWorkSpace() {
     delApi(data).then(res => {
       if (res.data.code === 200) {
         ElMessage.success('删除成功')
-        useRouter().push('/')
+        router.push('/')
       } else {
         ElMessage.error('删除失败')
       }
