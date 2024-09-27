@@ -21,4 +21,11 @@ public class WorkSpaceMemory extends TimedCache<String, WorkSpace> {
         return getInstance().get(key);
     }
 
+    public static void putWorkSpace(String key, WorkSpace workSpace, long timeout) {
+        getInstance().put(key, workSpace, timeout);
+    }
+
+    public static boolean isNotValid(String key) {
+        return !getInstance().containsKey(key);
+    }
 }

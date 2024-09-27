@@ -25,11 +25,6 @@ axios.interceptors.response.use(
             let number = new Date().getTime() - requestMap.get(response.config.url);
             console.log(response.config.url, ' , run time : ', number, ' ms');
         } catch (e) {}
-        if (response.data.code && response.data.code !== 200) {
-            // return Promise.reject(response.data);
-            // ElMessage.warning(response.data.message);
-            return Promise.reject(response.data);
-        }
         return response.data;
     },
     function (error) {

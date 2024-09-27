@@ -14,4 +14,6 @@ import java.util.Set;
 @Data
 public class UserConfig {
     private Set<String> code;
+
+
 }

@@ -14,7 +14,13 @@ public enum ErrorCode {
     // USER
     PASSWORD_ERROR(40003, "密码错误"),
     USER_NOT_LOGIN(40005, "用户未登录"),
-    USER_LOCK(40013, "邀请码错误");
+    USER_LOCK(40013, "邀请码错误"),
+
+    WORKSPACE_NOT_EXIST(5006, "工作空间已失效"),
+    CODE_ERROR(5007, "空间码错误"),
+    LINK_NOT_EXIST(5008, "链接无效"),
+    ;
+
 
     private final int code;
     private final String message;

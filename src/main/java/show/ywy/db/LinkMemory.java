@@ -25,4 +25,8 @@ public class LinkMemory extends TimedCache<String, String> {
     public static String getSpaceId(String link) {
         return getInstance().get(link);
     }
+
+    public static void putLink(String link, String spaceId, long timeout) {
+        getInstance().put(link, spaceId, timeout);
+    }
 }
