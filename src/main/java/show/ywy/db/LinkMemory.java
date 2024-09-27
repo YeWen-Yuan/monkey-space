@@ -3,7 +3,6 @@ package show.ywy.db;
 import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.lang.Singleton;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -19,5 +18,7 @@ public class LinkMemory extends TimedCache<String, String> {
         return Singleton.get(LinkMemory.class, TimeUnit.MINUTES.toMillis(60) * 5);
     }
 
-
+    public static boolean isNotValid(String link) {
+        return !getInstance().containsKey(link);
+    }
 }

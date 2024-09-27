@@ -1,6 +1,5 @@
 package show.ywy.controller;
 
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -43,11 +42,6 @@ public class WorkSpaceController {
         return Result.ok(JSONUtil.createObj().set("key", SecureTool.encrypt(workSpace)).set("id", workSpace));
     }
 
-    @PostMapping("workspace/share")
-    public Result<String> share() {
-        return Result.ok(workSpaceService.share());
-    }
-
     @PostMapping("workspace/into")
     public Result<JSONObject> into(@RequestBody IntoWorkSpace intoWorkSpace) {
         String into = workSpaceService.into(intoWorkSpace);
@@ -62,22 +56,16 @@ public class WorkSpaceController {
         return Result.ok(workSpaceService.delete());
     }
 
-    @PostMapping("workspace/isLogin")
-    public Result<Boolean> isLogin(@RequestBody JSONObject data) {
-        String link = data.getStr("link");
-        String spaceId = LinkMemory.getInstance().get(link);
-        if (spaceId == null) {
-            return Result.ok(false);
-        }
-        return Result.ok(StpUtil.isLogin(link + "|" + spaceId));
-    }
-
     @PostMapping("workspace/checkLoginKey")
     public Result<Boolean> checkLoginKey(@RequestBody JSONObject data) {
         String link = data.getStr("link");
+        boolean notValid = LinkMemory.isNotValid(link);
+        if (notValid) {
+            return Result.ok(false);
+        }
         String key = data.getStr("key");
-        SecureTool.decrypt(key);
-        if (Objects.equals(link, key)) {
+        String decrypt = SecureTool.decrypt(key);
+        if (Objects.equals(link, decrypt)) {
             return Result.ok(true);
         } else {
             return Result.ok(false);

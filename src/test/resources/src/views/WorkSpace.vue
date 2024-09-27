@@ -20,32 +20,30 @@ function intoCheck() {
   let access_check = urlCheck();
   if (access_check) {
     let access_showDialog = showDialog()
+    // 判断是否显示弹窗
+    console.log('access_showDialog', access_showDialog)
     if (access_showDialog) {
-      // 说明localStorage中没有key + id
       visible.value = true;
     } else {
-      //
       checkLoginKeyApi(route.query.id, localStorage.getItem("key")).then(res => {
-        visible.value = !(res.code !== 200 && res.data)
-        // 调用数据接口
+        if (res.data) {
+          visible.value = false;
+        } else {
+          ElMessage.error('链接已失效！')
+          router.push('/')
+        }
+      }).catch(err => {
+        ElMessageBox.alert('未知异常', '提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+            router.push('/')
+          }
+        })
       })
     }
   } else {
     router.push('/')
   }
-}
-
-
-function isLogin() {
-  isLoginApi(data).then(res => {
-    if (res.code === 200 && res.data) {
-      // is login goto
-      visible.value = false;
-    } else {
-      // not login
-      visible.value = true
-    }
-  })
 }
 
 function delWorkSpace() {

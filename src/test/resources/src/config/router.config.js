@@ -1,11 +1,11 @@
 import {createMemoryHistory, createRouter, createWebHashHistory, createWebHistory} from 'vue-router'
 
 import Welcome from "@/views/Welcome.vue";
-import OptionSpace from '@/views/OptionSpace.vue'
+import WorkSpace from '@/views/WorkSpace.vue'
 
 const routes = [
     {name: 'welcome', path: '/', component: Welcome},
-    {name: 'workSpace', path: '/work-space', component: OptionSpace},
+    {name: 'workSpace', path: '/work-space', component: WorkSpace},
 ]
 
 const router = createRouter({

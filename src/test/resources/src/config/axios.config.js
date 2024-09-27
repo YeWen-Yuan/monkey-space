@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {ElMessage} from "element-plus";
 
 axios.defaults.baseURL = 'http://localhost:8080/';
 
@@ -25,6 +26,8 @@ axios.interceptors.response.use(
             console.log(response.config.url, ' , run time : ', number, ' ms');
         } catch (e) {}
         if (response.data.code && response.data.code !== 200) {
+            // return Promise.reject(response.data);
+            // ElMessage.warning(response.data.message);
             return Promise.reject(response.data);
         }
         return response.data;

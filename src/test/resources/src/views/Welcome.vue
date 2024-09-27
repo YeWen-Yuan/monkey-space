@@ -9,7 +9,6 @@ let dialog = reactive({
 })
 
 function workspace(type) {
-  console.log('workspace')
   dialog.type = type
   if (type === 'create') {
     dialog.visible = true
@@ -17,6 +16,9 @@ function workspace(type) {
     dialog.visible = true
   }
 }
+
+localStorage.removeItem('key')
+localStorage.removeItem('hasLogin')
 </script>
 
 <template>
