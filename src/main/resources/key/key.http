@@ -1,37 +1,13 @@
+
+
 POST http://web.chacuo.net/netrsakeypair
 Accept: */*
-Accept-Encoding: gzip, deflate
-Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
-Content-Length: 46
-Content-Type: application/x-www-form-urlencoded; charset=UTF-8
-Cookie: Hm_lvt_ef483ae9c0f4f800aefdf407e35a21b3=1726707244,1727329720,1727419402; Hm_lpvt_ef483ae9c0f4f800aefdf407e35a21b3=1727419402; HMACCOUNT=EF20D25591A5C62E
-Host: web.chacuo.net
-Origin: http://web.chacuo.net
-Proxy-Connection: keep-alive
-Referer: http://web.chacuo.net/netrsakeypair
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36 Edg/129.0.0.0
-X-Requested-With: XMLHttpRequest
+accept-language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
+proxy-connection: keep-alive
+x-requested-with: XMLHttpRequest
+User-Agent: Apifox/1.0.0 (https://apifox.com)
+Content-Type: application/x-www-form-urlencoded
+
+data=2048&type=rsakeypair&arg=t%3D1_o%3D0_p%3D
 
 
-{
-  "data": 2048,
-  "type": "rsakeypair",
-  "arg": "t=1_o=0_p="
-}
-
-
-fetch("http://web.chacuo.net/netrsakeypair", {
-  "headers": {
-    "accept": "*/*",
-    "accept-language": "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-    "content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-    "proxy-connection": "keep-alive",
-    "x-requested-with": "XMLHttpRequest"
-  },
-  "referrer": "http://web.chacuo.net/netrsakeypair",
-  "referrerPolicy": "strict-origin-when-cross-origin",
-  "body": "data=2048&type=rsakeypair&arg=t%3D1_o%3D0_p%3D",
-  "method": "POST",
-  "mode": "cors",
-  "credentials": "include"
-});

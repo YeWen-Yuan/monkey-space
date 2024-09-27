@@ -7,6 +7,7 @@ import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 
 import java.io.File;
@@ -58,11 +59,11 @@ public class SecureTool {
                 .header("User-Agent", "Apifox/1.0.0 (https://apifox.com)")
                 .execute()) {
             String body = execute.body();
-            System.out.println(body);
-            String public_key = JSONUtil.parse(body).getByPath("data[0][0]").toString();
+            JSON parse = JSONUtil.parse(body);
+            String public_key = parse.getByPath("data[0][0]").toString();
             String file = ResourceUtil.getResource("key/public.key").getFile();
             FileWriter.create(new File(file)).write(public_key, false);
-            String private_key = JSONUtil.parse(body).getByPath("data[0][1]").toString();
+            String private_key = parse.getByPath("data[0][1]").toString();
             String file2 = ResourceUtil.getResource("key/private.key").getFile();
             FileWriter.create(new File(file2)).write(private_key, false);
         }
