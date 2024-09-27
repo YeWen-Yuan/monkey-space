@@ -1,5 +1,7 @@
 package show.ywy.entity;
 
+import cn.hutool.core.io.file.FileReader;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.crypto.asymmetric.KeyType;
 
@@ -10,7 +12,8 @@ import java.nio.charset.StandardCharsets;
  */
 public class SecureTool {
 
-
+    private final static String PRIVATE_KEY = new FileReader(ResourceUtil.getResource("key/private.key").getFile()).readString();
+    private final static String PUBLIC_KEY = new FileReader(ResourceUtil.getResource("key/public.key").getFile()).readString();
 
     public static String getPublicKey() {
         return PUBLIC_KEY;
@@ -36,12 +39,6 @@ public class SecureTool {
      */
     public static String decrypt(String data) {
         return SecureUtil.rsa(PRIVATE_KEY, PUBLIC_KEY).decryptStr(data, KeyType.PrivateKey);
-    }
-
-    public static void main(String[] args) {
-        String encrypt = encrypt("123");
-        System.out.println(encrypt);
-        System.out.println(decrypt(encrypt));
     }
 
 }
