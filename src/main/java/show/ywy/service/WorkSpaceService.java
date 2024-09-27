@@ -58,13 +58,27 @@ public class WorkSpaceService {
     }
 
     public String into(IntoWorkSpace intoWorkSpace) {
+        // link 是否有效
         String link = intoWorkSpace.getLink();
-        String spaceUuid = LinkMemory.getInstance().get(link);
-        if (spaceUuid == null) {
-            return "";
+        if (LinkMemory.isNotValid(link)) {
+            return null;
         }
-        StpUtil.login(link + "|" + spaceUuid);
-        return link;
+        // code 是否正确
+        String spaceUuid = LinkMemory.getSpaceId(link);
+        String code = intoWorkSpace.getCode();
+        if (!spaceUuid.endsWith(code)){
+            return null;
+        }
+        // 判断workspace是否存在
+        boolean b = WorkSpaceMemory.getInstance().containsKey(spaceUuid);
+        if (!b) {
+            return null;
+        }
+        // link
+        String newLink = RandomUtil.randomString(50);
+        StpUtil.login(newLink + "|" + spaceUuid);
+        LinkMemory.getInstance().put(newLink, spaceUuid, TimeConfig.LINK_TIMEOUT);
+        return newLink;
     }
 
 

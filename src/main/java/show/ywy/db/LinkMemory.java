@@ -21,4 +21,8 @@ public class LinkMemory extends TimedCache<String, String> {
     public static boolean isNotValid(String link) {
         return !getInstance().containsKey(link);
     }
+
+    public static String getSpaceId(String link) {
+        return getInstance().get(link);
+    }
 }

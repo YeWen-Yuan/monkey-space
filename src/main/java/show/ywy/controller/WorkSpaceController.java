@@ -47,6 +47,7 @@ public class WorkSpaceController {
         String into = workSpaceService.into(intoWorkSpace);
         JSONObject result = JSONUtil.createObj().set("login", StrUtil.isNotBlank(into));
         result.set("key", SecureTool.encrypt(into));
+        result.set("link", into);
         return Result.ok(result);
     }
 

@@ -58,7 +58,6 @@ function createWorkSpace() {
 function intoWorkSpace() {
   // 继续调用接口
   intoWorkSpaceCheckApi(data.query.id, dialog.code).then(res => {
-    console.log(res)
     if (res.data.login) {
       localStorage.setItem("key", res.data.key)
       localStorage.setItem("hasLogin", "true")
@@ -66,7 +65,7 @@ function intoWorkSpace() {
       router.push({
         path: '/work-space',
         query: {
-          id:data.query.id
+          id:res.data.link
         }
       })
     } else {
