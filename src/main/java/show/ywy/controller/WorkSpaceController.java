@@ -2,11 +2,9 @@ package show.ywy.controller;
 
 import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import show.ywy.entity.CreateLink;
+import show.ywy.entity.FlashVo;
 import show.ywy.entity.IntoWorkSpace;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
@@ -49,5 +47,10 @@ public class WorkSpaceController {
     @PostMapping("workspace/checkLoginKey")
     public Result<Boolean> checkLoginKey(@RequestBody JSONObject data) {
         return workSpaceService.checkLoginKey(data);
+    }
+
+    @GetMapping("workspace/flash")
+    public Result<FlashVo> flash() {
+        return workSpaceService.flash();
     }
 }

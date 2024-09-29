@@ -11,10 +11,7 @@ import show.ywy.config.TimeConfig;
 import show.ywy.config.UserConfig;
 import show.ywy.db.LinkMemory;
 import show.ywy.db.WorkSpaceMemory;
-import show.ywy.entity.CreateLink;
-import show.ywy.entity.IntoWorkSpace;
-import show.ywy.entity.SecureTool;
-import show.ywy.entity.WorkSpace;
+import show.ywy.entity.*;
 import show.ywy.result.ErrorCode;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
@@ -109,6 +106,15 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
         } else {
             return Result.error(ErrorCode.LINK_NOT_EXIST);
         }
+    }
+
+    @Override
+    public Result<FlashVo> flash() {
+            String loginIdAsString = StpUtil.getLoginIdAsString();
+            WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(loginIdAsString);
+            FlashVo flashVo = new FlashVo();
+            flashVo.setWorkSpace(workSpace);
+            return Result.ok(flashVo);
     }
 
     /**
