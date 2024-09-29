@@ -21,6 +21,11 @@ public class SecureTool {
     private final static String PRIVATE_KEY = new FileReader(ResourceUtil.getResource("key/private.key").getFile()).readString();
     private final static String PUBLIC_KEY = new FileReader(ResourceUtil.getResource("key/public.key").getFile()).readString();
 
+    /**
+     * 获取公钥
+     *
+     * @return java.lang.String
+     */
     public static String getPublicKey() {
         return PUBLIC_KEY;
     }
@@ -30,7 +35,6 @@ public class SecureTool {
      *
      * @param data 数据
      * @return java.lang.String
-     * @since 2024/7/30
      */
     public static String encrypt(String data) {
         return SecureUtil.rsa(PRIVATE_KEY, PUBLIC_KEY).encryptBase64(data, StandardCharsets.UTF_8, KeyType.PublicKey);
@@ -41,12 +45,14 @@ public class SecureTool {
      *
      * @param data 数据
      * @return java.lang.String
-     * @since 2024/7/30
      */
     public static String decrypt(String data) {
         return SecureUtil.rsa(PRIVATE_KEY, PUBLIC_KEY).decryptStr(data, KeyType.PrivateKey);
     }
 
+    /**
+     * 创建密钥
+     */
     public static void createKey() {
         try (HttpResponse execute = HttpUtil.createPost("http://web.chacuo.net/netrsakeypair")
                 .form("data", "2048")
