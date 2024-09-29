@@ -25,3 +25,9 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: true
+
+oos:
+  endpoint: oss-cn-beijing.aliyuncs.com
+  bucketName : lisen
+  OSS_ACCESS_KEY_ID: LTAI4G5Q5Q5Q5Q5Q5Q5Q5Q5Q
+  OSS_ACCESS_KEY_SECRET: 5Q5Q5Q5Q5Q
