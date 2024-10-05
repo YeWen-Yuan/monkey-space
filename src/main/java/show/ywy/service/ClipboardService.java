@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import show.ywy.db.WorkSpaceMemory;
 import show.ywy.entity.Clipboard;
 import show.ywy.entity.WorkSpace;
-
-import java.util.List;
+import show.ywy.util.UserUtil;
 
 /**
  * @author yzs
@@ -15,13 +14,10 @@ import java.util.List;
 public class ClipboardService {
 
     public boolean addClipboard(String text) {
-        WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(StpUtil.getLoginIdAsString());
+        String loginIdAsString = StpUtil.getLoginIdAsString();
+        WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(UserUtil.getWorkSpaceId(loginIdAsString));
         workSpace.getClipboardHistory().add(new Clipboard(text));
         return true;
     }
 
-    public List<Clipboard> getClipboard() {
-        WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(StpUtil.getLoginIdAsString());
-        return workSpace.getClipboardHistory();
-    }
 }

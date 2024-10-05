@@ -8,14 +8,14 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author yzs
  */
-public class LinkMemory extends TimedCache<String, String> {
+public class UserMemory extends TimedCache<String, String> {
 
-    public LinkMemory(long timeout) {
+    public UserMemory(long timeout) {
         super(timeout);
     }
 
-    public static LinkMemory getInstance() {
-        return Singleton.get(LinkMemory.class, TimeUnit.MINUTES.toMillis(60) * 5);
+    public static UserMemory getInstance() {
+        return Singleton.get(UserMemory.class, TimeUnit.MINUTES.toMillis(60) * 5);
     }
 
     public static boolean isNotValid(String link) {
@@ -26,7 +26,7 @@ public class LinkMemory extends TimedCache<String, String> {
         return getInstance().get(link);
     }
 
-    public static void putLink(String link, String spaceId, long timeout) {
+    public static void putUser(String link, String spaceId, long timeout) {
         getInstance().put(link, spaceId, timeout);
     }
 }

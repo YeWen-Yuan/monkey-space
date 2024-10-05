@@ -24,8 +24,4 @@ public class ClipboardController {
         return Result.ok(clipboardService.addClipboard(text));
     }
 
-    @GetMapping("get")
-    public Result<List<Clipboard>> getClipboard() {
-        return Result.ok(clipboardService.getClipboard());
-    }
 }

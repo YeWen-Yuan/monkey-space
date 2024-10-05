@@ -3,11 +3,18 @@
 import FileList from "@/components/FileList.vue";
 import Clip from "@/components/Clip.vue";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {checkLoginKeyApi, delApi} from "@/api/workSpace.api.js";
+import {checkLoginKeyApi, delApi, flashApi} from "@/api/workSpace.api.js";
 import InfoDialog from "@/components/InfoDialog.vue";
 import {showDialog, urlCheck} from '@/assets/into.hock.js'
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
+
+
+function init() {
+  flashApi().then(res=>{
+    console.log(res.data)
+  })
+}
 
 let visible = ref(null);
 let route = useRoute()
@@ -28,6 +35,7 @@ function intoCheck() {
       checkLoginKeyApi(route.query.id, localStorage.getItem("key")).then(res => {
         if (res.data) {
           visible.value = false;
+          init()
         } else {
           ElMessage.error('链接已失效！')
           router.push('/')

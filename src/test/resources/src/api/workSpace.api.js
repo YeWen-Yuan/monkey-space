@@ -26,3 +26,7 @@ export const isValidInvitationCodeApi = (code) => {
 export const checkLoginKeyApi = (link, key) => {
     return axios.post('workspace/checkLoginKey', {link, key})
 }
+
+export const flashApi = () => {
+    return axios.get('workspace/flash')
+}

@@ -1,6 +1,8 @@
 package show.ywy.service.impl;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -9,7 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import show.ywy.config.TimeConfig;
 import show.ywy.config.UserConfig;
-import show.ywy.db.LinkMemory;
+import show.ywy.db.UserMemory;
 import show.ywy.db.WorkSpaceMemory;
 import show.ywy.entity.*;
 import show.ywy.result.ErrorCode;
@@ -45,13 +47,18 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
      * @since 2024/9/27
      */
     public Result<JSONObject> createWorkSpace(CreateLink createLink) {
-        String link = createLink();
+        String username = createLink();
         String spaceUuid = createWorkSpaceUuid(createLink.getSpaceCode());
-        WorkSpace workSpace = init(link);
+        // create user
+        UserMemory.putUser(username, spaceUuid, TimeConfig.LINK_TIMEOUT);
+        WorkSpace workSpace = init(username);
+        // auto login
+        StpUtil.login(username + "@" + spaceUuid);
+        SaTokenInfo tokenInfo = StpUtil.getTokenInfo();
+        // create workspace
         WorkSpaceMemory.putWorkSpace(spaceUuid, workSpace, TimeConfig.WORK_SPACE_TIMEOUT);
-        StpUtil.login(link + "@" + spaceUuid);
-        LinkMemory.putLink(link, spaceUuid, TimeConfig.LINK_TIMEOUT);
-        return Result.ok(JSONUtil.createObj().set("key", SecureTool.encrypt(link)).set("id", link));
+        return Result.ok(JSONUtil.createObj().set("tokenInfo",tokenInfo)
+                .set("key", SecureTool.encrypt(username)).set("id", username));
     }
 
 
@@ -63,12 +70,12 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
     public Result<String> into(IntoWorkSpace intoWorkSpace) {
         // link 是否有效
         String link = intoWorkSpace.getLink();
-        if (LinkMemory.isNotValid(link)) {
+        String code = intoWorkSpace.getCode();
+        if (UserMemory.isNotValid(link)) {
             return Result.error(ErrorCode.LINK_NOT_EXIST);
         }
         // code 是否正确
-        String spaceUuid = LinkMemory.getSpaceId(link);
-        String code = intoWorkSpace.getCode();
+        String spaceUuid = UserMemory.getSpaceId(link);
         if (!spaceUuid.endsWith(code)) {
             return Result.error(ErrorCode.CODE_ERROR);
         }
@@ -79,8 +86,8 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
         }
         // link
         String newLink = createLink();
-        LinkMemory.putLink(newLink, spaceUuid, TimeConfig.LINK_TIMEOUT);
-        StpUtil.login(newLink + "|" + spaceUuid);
+        UserMemory.putUser(newLink, spaceUuid, TimeConfig.LINK_TIMEOUT);
+        StpUtil.login(link + StrPool.AT + spaceUuid);
         // 返回
         JSONObject result = JSONUtil.createObj().set("login", StrUtil.isNotBlank(newLink));
         result.set("key", SecureTool.encrypt(newLink));
@@ -95,7 +102,7 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
      */
     public Result<Boolean> checkLoginKey(JSONObject data) {
         String link = data.getStr("link");
-        boolean notValid = LinkMemory.isNotValid(link);
+        boolean notValid = UserMemory.isNotValid(link);
         if (notValid) {
             return Result.error(ErrorCode.LINK_NOT_EXIST);
         }
@@ -110,11 +117,12 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
 
     @Override
     public Result<FlashVo> flash() {
-            String loginIdAsString = StpUtil.getLoginIdAsString();
-            WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(loginIdAsString);
-            FlashVo flashVo = new FlashVo();
-            flashVo.setWorkSpace(workSpace);
-            return Result.ok(flashVo);
+        String loginId = StpUtil.getLoginIdAsString();
+        String spaceId = StrUtil.split(loginId, StrPool.AT).get(1);
+        WorkSpace workSpace = WorkSpaceMemory.getWorkSpace(spaceId);
+        FlashVo flashVo = new FlashVo();
+        flashVo.setWorkSpace(workSpace);
+        return Result.ok(flashVo);
     }
 
     /**
@@ -131,7 +139,7 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
 
     public Result<Boolean> isLogin(@RequestBody JSONObject data) {
         String link = data.getStr("link");
-        String spaceId = LinkMemory.getInstance().get(link);
+        String spaceId = UserMemory.getInstance().get(link);
         if (spaceId == null) {
             return Result.ok(false);
         }

@@ -12,6 +12,7 @@ import com.aliyuncs.exceptions.ClientException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import show.ywy.config.OosConfig;
+import show.ywy.service.FileService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
@@ -22,27 +23,40 @@ import java.io.InputStream;
  * @author yzs
  */
 @Service
-public class FileOOSServiceImpl {
+public class FileOOSServiceImpl extends FileService {
 
     @Resource
     private OosConfig oosConfig;
 
-    public void upload(MultipartFile file) throws ClientException, IOException {
-        EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
-        OSS ossClient = new OSSClientBuilder().build(oosConfig.getEndpoint(), credentialsProvider);
-        InputStream inputStream = file.getInputStream();
-        // 创建PutObjectRequest对象。
-        PutObjectRequest putObjectRequest = new PutObjectRequest(oosConfig.getBucketName(), file.getName(), inputStream);
-        // 如果需要上传时设置存储类型和访问权限，请参考以下示例代码。
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
-        metadata.setObjectAcl(CannedAccessControlList.Private);
-        putObjectRequest.setMetadata(metadata);
-        // 创建PutObject请求。
-        PutObjectResult result = ossClient.putObject(putObjectRequest);
-        System.out.println("upload");
+    @Override
+    public void upload(MultipartFile file)  {
+        try {
+            EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
+            OSS ossClient = new OSSClientBuilder().build(oosConfig.getEndpoint(), credentialsProvider);
+            InputStream inputStream = file.getInputStream();
+            // 创建PutObjectRequest对象。
+            PutObjectRequest putObjectRequest = new PutObjectRequest(oosConfig.getBucketName(), file.getName(), inputStream);
+            // 如果需要上传时设置存储类型和访问权限，请参考以下示例代码。
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setHeader(OSSHeaders.OSS_STORAGE_CLASS, StorageClass.Standard.toString());
+            metadata.setObjectAcl(CannedAccessControlList.Private);
+            putObjectRequest.setMetadata(metadata);
+            // 创建PutObject请求。
+            PutObjectResult result = ossClient.putObject(putObjectRequest);
+            System.out.println("upload");
+        } catch (ClientException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
+    public void delete(String fileName) {
+
+    }
+
+    @Override
     public void download(String fileName, HttpServletResponse response) {
         System.out.println("download");
         EnvironmentVariableCredentialsProvider credentialsProvider;
