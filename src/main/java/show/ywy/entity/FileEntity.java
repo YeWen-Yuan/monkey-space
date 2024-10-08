@@ -7,6 +7,7 @@ import java.io.File;
 
 /**
  * File 实体
+ *
  * @author yzs
  */
 @Data
@@ -20,7 +21,16 @@ public class FileEntity {
     // OOS file
     private OosFile oos_file;
 
-    public long fileSize(){
+    public long fileSize() {
         return FileUtil.size(file);
     }
+
+    public static String getFileService(long size) {
+        return size / 1024 / 1024 < 100 ? "localFileService" : "OSSFileService";
+    }
+
+    public String getFileService() {
+        return getFileService(fileSize());
+    }
+
 }

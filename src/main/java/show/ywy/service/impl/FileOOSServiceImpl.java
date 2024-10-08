@@ -25,7 +25,7 @@ import java.io.InputStream;
 /**
  * @author yzs
  */
-@Service
+@Service("OSSFileService")
 public class FileOOSServiceImpl extends FileService {
 
     @Resource
@@ -50,11 +50,6 @@ public class FileOOSServiceImpl extends FileService {
         } catch (ClientException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
-    }
-
-    @Override
-    public Result<JSONObject> delete(String fileName) {
         return null;
     }
 
@@ -96,5 +91,10 @@ public class FileOOSServiceImpl extends FileService {
                 ossClient.shutdown();
             }
         }
+    }
+
+    @Override
+    public Result<JSONObject> delete(String fileName) {
+        return null;
     }
 }

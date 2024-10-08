@@ -31,6 +31,7 @@ public class ExceptionHandlerController {
      */
     @ExceptionHandler(PasswordEncodeException.class)
     public Result<?> exception(PasswordEncodeException e) {
+        log.error(e.getMessage(), e);
         return Result.error(ErrorCode.PASSWORD_ERROR);
     }
 
