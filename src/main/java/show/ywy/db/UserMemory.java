@@ -26,6 +26,10 @@ public class UserMemory extends TimedCache<String, String> {
         return getInstance().get(link);
     }
 
+    public static String getUserInfo(String link) {
+        return getInstance().get(link);
+    }
+
     public static void putUser(String link, String spaceId, long timeout) {
         getInstance().put(link, spaceId, timeout);
     }

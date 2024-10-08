@@ -4,7 +4,6 @@ import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import show.ywy.entity.CreateLink;
-import show.ywy.entity.FlashVo;
 import show.ywy.entity.IntoWorkSpace;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
@@ -30,27 +29,17 @@ public class WorkSpaceController {
         if (!workSpaceService.invitationCode(createLink.getInvitationCode()).getData()) {
             return Result.error(USER_LOCK);
         }
-        return workSpaceService.createWorkSpace(createLink);
+        return workSpaceService.login(createLink);
     }
 
     @PostMapping("workspace/into")
     public Result<?> into(@RequestBody IntoWorkSpace intoWorkSpace) {
-        return workSpaceService.into(intoWorkSpace);
+        return workSpaceService.data(intoWorkSpace);
     }
 
 
     @DeleteMapping("workspace/delete")
     public Result<Boolean> deleteLink() {
         return workSpaceService.delete();
-    }
-
-    @PostMapping("workspace/checkLoginKey")
-    public Result<Boolean> checkLoginKey(@RequestBody JSONObject data) {
-        return workSpaceService.checkLoginKey(data);
-    }
-
-    @GetMapping("workspace/flash")
-    public Result<FlashVo> flash() {
-        return workSpaceService.flash();
     }
 }
