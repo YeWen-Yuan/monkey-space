@@ -1,6 +1,9 @@
 package show.ywy.service;
 
+import cn.hutool.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
+import show.ywy.entity.FileEntity;
+import show.ywy.result.Result;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -9,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public abstract class FileService {
 
-    public abstract void delete(String fileName);
+    public abstract Result<JSONObject> delete(String fileName);
 
-    public abstract void download(String fileName, HttpServletResponse response);
+    public abstract void download(FileEntity fileEntity, HttpServletResponse response);
 
-    public abstract void upload(MultipartFile multipartFile);
+    public abstract Result<JSONObject> upload(MultipartFile multipartFile);
 }
