@@ -6,6 +6,5 @@ export const fileUploadApi = (file) => {
     };
     let formData = new FormData();
     formData.append('file', file);
-
     return axios.post('file/upload', formData, config)
 }

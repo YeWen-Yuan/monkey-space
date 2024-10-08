@@ -5,9 +5,8 @@
       ref="upload"
       :auto-upload="false"
       :on-exceed="handleExceed">
-    <template  #trigger>
-
-    <el-button type="primary">上传</el-button>
+    <template #trigger>
+     <el-button type="primary">上传</el-button>
     </template>
     <el-button class="ml-3" type="success" @click="uploadFile">
       upload to server
@@ -17,8 +16,8 @@
   <div class="clip" v-for="file in fileLists">
     <div>{{ file.name }}</div>
     <el-space class="margin-top-20">
-      <el-link type="success" @click="handleRemove(scope.file)">下载</el-link>
-      <el-link type="danger" @click="handleRemove(scope.file)">删除</el-link>
+      <el-link type="success" @click="handleRemove(file)">下载</el-link>
+      <el-link type="danger" @click="handleRemove(file)">删除</el-link>
     </el-space>
   </div>
 </template>
@@ -36,15 +35,12 @@ let fileLists = defineModel('fileList', {
 
 const fileList = ref<UploadUserFile[]>([])
 
-const handleRemove: UploadProps['onRemove'] = (file, uploadFiles) => {
-  console.log(file, uploadFiles)
+const handleRemove = (file) => {
+  console.log(file)
 }
 
-const handlePreview: UploadProps['onPreview'] = (uploadFile) => {
-  console.log(uploadFile)
-}
-import { genFileId } from 'element-plus'
-import type { UploadInstance,  UploadRawFile } from 'element-plus'
+import {genFileId} from 'element-plus'
+import type {UploadInstance, UploadRawFile} from 'element-plus'
 
 
 const upload = ref<UploadInstance>()
@@ -66,7 +62,9 @@ const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
 
 function uploadFile() {
   let valueElement = fileList.value[0];
-  fileUploadApi(valueElement).then(response => {
+  console.log(valueElement);
+  console.log(upload.value)
+  fileUploadApi(valueElement.raw).then(response => {
     console.log(response);
   }).catch(error => {
     console.log(error);
