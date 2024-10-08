@@ -1,10 +1,12 @@
 <script setup>
-import {ref} from "vue";
+import {ref, defineModel} from "vue";
+import {clipboardAddApi} from "@/api/clipboard.api.js";
 
-let data = ref([
-  'asdasdasdasdas',
-  'adasdasdasdasdas'
-]);
+
+let data = defineModel('clipboardHistory', {
+  type: Array,
+  default: []
+})
 
 let text = ref('')
 
@@ -13,8 +15,10 @@ function addText() {
     // 获取系统剪贴板
     navigator.clipboard.readText().then(clipText => {
       data.value.unshift(clipText)
+      clipboardAddApi(clipText)
     })
   } else {
+    clipboardAddApi(text.value)
     data.value.unshift(text.value)
     text.value = ''
   }

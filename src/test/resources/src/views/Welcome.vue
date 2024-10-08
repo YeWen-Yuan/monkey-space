@@ -13,8 +13,8 @@ function workspace(type) {
   dialog.visible = true
 }
 
-localStorage.removeItem('key')
-localStorage.removeItem('hasLogin')
+localStorage.removeItem('tokenName')
+localStorage.removeItem('tokenValue')
 </script>
 
 <template>
@@ -59,8 +59,8 @@ localStorage.removeItem('hasLogin')
   background-color: rgba(0, 0, 0, 0);
   background-image: -webkit-linear-gradient(120deg, rgb(189, 52, 254) 30%, rgb(65, 209, 255));
   background-origin: padding-box;
-  background-position-x: 0%;
-  background-position-y: 0%;
+  background-position-x: 0;
+  background-position-y: 0;
   background-repeat: repeat;
   background-size: auto;
   box-sizing: border-box;

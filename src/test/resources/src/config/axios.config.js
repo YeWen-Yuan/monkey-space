@@ -1,5 +1,4 @@
 import axios from 'axios';
-import {ElMessage} from "element-plus";
 
 axios.defaults.baseURL = 'http://localhost:8080/';
 
@@ -10,6 +9,8 @@ axios.interceptors.request.use(
         try {
             requestMap.set(config.url, new Date().getTime());
         } catch (e) {}
+        let tn = localStorage.getItem('tokenName');
+        config.headers[tn] = localStorage.getItem('tokenValue');
         return config;
     },
     function (error) {

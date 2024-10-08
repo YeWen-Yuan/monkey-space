@@ -19,7 +19,7 @@ public class WorkSpaceController {
 
     private final WorkSpaceService workSpaceService;
 
-    @PostMapping("code/invitation")
+    @PostMapping("workspace/code/invitation")
     public Result<Boolean> isValidInvitationCode(@RequestBody JSONObject code) {
         return workSpaceService.invitationCode(code.getStr("code"));
     }

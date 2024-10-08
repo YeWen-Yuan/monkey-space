@@ -1,7 +1,6 @@
 package show.ywy.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.text.StrPool;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
@@ -11,10 +10,7 @@ import show.ywy.config.TimeConfig;
 import show.ywy.config.UserConfig;
 import show.ywy.db.UserMemory;
 import show.ywy.db.WorkSpaceMemory;
-import show.ywy.entity.CreateLink;
-import show.ywy.entity.IntoWorkSpace;
-import show.ywy.entity.SecureTool;
-import show.ywy.entity.WorkSpace;
+import show.ywy.entity.*;
 import show.ywy.result.ErrorCode;
 import show.ywy.result.Result;
 import show.ywy.service.WorkSpaceService;
@@ -48,14 +44,16 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
     public Result<JSONObject> login(CreateLink createLink) {
         String username = RandomUtil.randomString(50);
         String spaceUuid = RandomUtil.randomString(20);
-        String userInfo = spaceUuid + StrPool.AT + createLink.getSpaceCode();
         // create user
+        UserInfo userInfo = new UserInfo();
+        userInfo.setWorkSpaceUuid(spaceUuid);
+        userInfo.setWorkSpaceCode(createLink.getSpaceCode());
         UserMemory.putUser(username, userInfo, TimeConfig.LINK_TIMEOUT);
         StpUtil.login(username);
         // create workspace
-        WorkSpaceMemory.putWorkSpace(spaceUuid, new WorkSpace(), TimeConfig.WORK_SPACE_TIMEOUT);
-        return Result.ok(JSONUtil.createObj().set("tokenInfo", StpUtil.getTokenInfo())
-                .set("key", SecureTool.encrypt(username)).set("id", username).set("data", new WorkSpace()));
+        WorkSpace workSpace = new WorkSpace();
+        WorkSpaceMemory.putWorkSpace(spaceUuid, workSpace, TimeConfig.WORK_SPACE_TIMEOUT);
+        return Result.ok(JSONUtil.parseObj(new WorkSpaceVo(workSpace, StpUtil.getTokenValue(), StpUtil.getTokenName(), username)));
     }
 
     /**
@@ -66,7 +64,11 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
     public Result<JSONObject> data(IntoWorkSpace intoWorkSpace) {
         if (StpUtil.isLogin()) {
             String loginId = StpUtil.getLoginIdAsString();
-            String workSpaceId = UserMemory.getSpaceId(loginId);
+            UserInfo userInfo = UserMemory.getUserInfo(loginId);
+            if (userInfo == null) {
+                return Result.error(ErrorCode.LINK_NOT_EXIST);
+            }
+            String workSpaceId = userInfo.getWorkSpaceUuid();
             return Result.ok(JSONUtil.createObj().set("data", WorkSpaceMemory.getWorkSpace(workSpaceId)));
         } else {
             // link 是否有效
@@ -76,18 +78,18 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
                 return Result.error(ErrorCode.LINK_NOT_EXIST);
             }
             // code 是否正确
-            String userInfo = UserMemory.getUserInfo(username);
-            if (!userInfo.endsWith(password)) {
+            String userInfo = UserMemory.getUserInfo(username).getWorkSpaceCode();
+            if (!userInfo.equalsIgnoreCase(password)) {
                 return Result.error(ErrorCode.CODE_ERROR);
             }
             // 判断workspace是否存在
-            String spaceId = UserMemory.getSpaceId(username);
+            String spaceId = UserMemory.getUserInfo(username).getWorkSpaceUuid();
             boolean notValid = WorkSpaceMemory.isNotValid(spaceId);
             if (notValid) {
                 return Result.error(ErrorCode.WORKSPACE_NOT_EXIST);
             }
             StpUtil.login(username);
-            return Result.ok(JSONUtil.createObj().set("data", new WorkSpace()));
+            return Result.ok(JSONUtil.parseObj(new WorkSpaceVo(null, StpUtil.getTokenValue(), StpUtil.getTokenName(), username)));
         }
     }
 
@@ -97,9 +99,15 @@ public class WorkSpaceServiceImpl extends WorkSpaceService {
      * @return boolean
      */
     public Result<Boolean> delete() {
-        String spaceUuid = StpUtil.getLoginIdAsString().split("\\|")[1];
-        WorkSpaceMemory.getInstance().remove(spaceUuid);
-        UserMemory.getInstance().remove(spaceUuid);
+        String loginId;
+        try {
+            loginId = StpUtil.getLoginIdAsString();
+        } catch (Exception e) {
+            return Result.ok(false);
+        }
+        String workSpaceUuid = UserMemory.getUserInfo(loginId).getWorkSpaceUuid();
+        UserMemory.getInstance().remove(loginId);
+        WorkSpaceMemory.getInstance().remove(workSpaceUuid);
         StpUtil.logout();
         return Result.ok(true);
     }

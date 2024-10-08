@@ -23,6 +23,7 @@ const dialog = reactive({
   code: '',
   invitationCode: '',
 })
+
 let data = useRoute();
 let router = useRouter();
 
@@ -39,8 +40,8 @@ function createWorkSpace() {
         confirmButtonText: '确定'
       })
     })
-    localStorage.setItem("key", data.key)
-    localStorage.setItem("hasLogin", "true")
+    localStorage.setItem("tokenName", data.tokenName)
+    localStorage.setItem("tokenValue", data.tokenValue)
     closeDialog()
     router.push({
       path: '/work-space',
@@ -58,14 +59,14 @@ function createWorkSpace() {
 function intoWorkSpace() {
   // 继续调用接口
   intoWorkSpaceCheckApi(data.query.id, dialog.code).then(res => {
-    if (res.data.login) {
-      localStorage.setItem("key", res.data.key)
-      localStorage.setItem("hasLogin", "true")
+    if (res.code===200) {
+      localStorage.setItem("tokenName", res.data.tokenName)
+      localStorage.setItem("tokenValue", res.data.tokenValue)
       closeDialog()
       router.push({
         path: '/work-space',
         query: {
-          id:res.data.link
+          id: data.query.id
         }
       })
     } else {
@@ -128,7 +129,6 @@ const handleClose = (done) => {
 }
 
 function closeDialog() {
-  console.log('closeDialog')
   visible.value = false
   if (props.type === 'into') {
     router.push('/')

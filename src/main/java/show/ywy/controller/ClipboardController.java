@@ -1,5 +1,7 @@
 package show.ywy.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import show.ywy.entity.Clipboard;
@@ -20,8 +22,9 @@ public class ClipboardController {
     private final ClipboardService clipboardService;
 
     @PostMapping("add")
-    public Result<Boolean> addClipboard(@RequestBody String text) {
-        return Result.ok(clipboardService.addClipboard(text));
+    @SaCheckLogin
+    public Result<Boolean> addClipboard(@RequestBody JSONObject text) {
+        return Result.ok(clipboardService.addClipboard(text.getStr("content")));
     }
 
 }

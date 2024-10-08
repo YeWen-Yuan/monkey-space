@@ -3,22 +3,19 @@
 import FileList from "@/components/FileList.vue";
 import Clip from "@/components/Clip.vue";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {checkLoginKeyApi, delApi, flashApi} from "@/api/workSpace.api.js";
+import {delApi, intoWorkSpaceCheckApi} from "@/api/workSpace.api.js";
 import InfoDialog from "@/components/InfoDialog.vue";
-import {showDialog, urlCheck} from '@/assets/into.hock.js'
+import {urlCheck} from '@/assets/into.hock.js'
 import {ref} from "vue";
 import {useRoute, useRouter} from "vue-router";
 
 
-function init() {
-  flashApi().then(res=>{
-    console.log(res.data)
-  })
-}
-
 let visible = ref(null);
 let route = useRoute()
 let router = useRouter();
+
+let clipboardHistory = ref([])
+let fileList = ref([])
 
 intoCheck()
 
@@ -26,29 +23,22 @@ function intoCheck() {
   // 判断URL是否合法
   let access_check = urlCheck();
   if (access_check) {
-    let access_showDialog = showDialog()
-    // 判断是否显示弹窗
-    console.log('access_showDialog', access_showDialog)
-    if (access_showDialog) {
-      visible.value = true;
-    } else {
-      checkLoginKeyApi(route.query.id, localStorage.getItem("key")).then(res => {
-        if (res.data) {
-          visible.value = false;
-          init()
-        } else {
-          ElMessage.error('链接已失效！')
-          router.push('/')
-        }
-      }).catch(err => {
-        ElMessageBox.alert('未知异常', '提示', {
-          confirmButtonText: '确定',
-          callback: action => {
-            router.push('/')
-          }
-        })
-      })
-    }
+    intoWorkSpaceCheckApi(route.query.id, route.query.code).then(res => {
+      if (res.code === 200) {
+        clipboardHistory.value = res.data.data.clipboardHistory.map(item => item.text)
+        visible.value = false
+      } else if (res.code === 5008) {
+        visible.value = false
+        ElMessage.error(res.message)
+        router.push('/')
+      } else if (res.code === 5006) {
+        visible.value = false
+        ElMessage.error(res.message)
+        router.push('/')
+      } else {
+        visible.value = true
+      }
+    })
   } else {
     router.push('/')
   }
@@ -60,8 +50,8 @@ function delWorkSpace() {
     cancelButtonText: '取消',
     type: 'warning'
   }).then(() => {
-    delApi(data).then(res => {
-      if (res.data.code === 200) {
+    delApi().then(res => {
+      if (res.code === 200) {
         ElMessage.success('删除成功')
         router.push('/')
       } else {
@@ -78,7 +68,7 @@ function delWorkSpace() {
   <div v-if="!visible">
     <div class="affix-container">
       <el-affix target=".affix-container" :offset="10">
-        <el-button type="primary">设置</el-button>
+<!--        <el-button type="primary">设置</el-button>-->
         <el-button type="danger" @click="delWorkSpace">删除当前工作空间</el-button>
       </el-affix>
     </div>
@@ -86,11 +76,11 @@ function delWorkSpace() {
       <el-row :gutter="224">
         <el-col :span="12">
           <h3>剪贴板</h3>
-          <clip></clip>
+          <clip v-model:clipboardHistory="clipboardHistory"></clip>
         </el-col>
         <el-col :span="12">
           <h3>文件交换列表</h3>
-          <file-list></file-list>
+          <file-list v-model:fileList="fileList"></file-list>
         </el-col>
       </el-row>
     </div>

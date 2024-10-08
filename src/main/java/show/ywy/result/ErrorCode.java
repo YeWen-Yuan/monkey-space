@@ -18,7 +18,7 @@ public enum ErrorCode {
 
     WORKSPACE_NOT_EXIST(5006, "工作空间已失效"),
     CODE_ERROR(5007, "空间码错误"),
-    LINK_NOT_EXIST(5008, "链接无效"),
+    LINK_NOT_EXIST(5008, "链接已失效"),
     ;
 
 
