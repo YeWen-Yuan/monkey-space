@@ -6,10 +6,10 @@
       :auto-upload="false"
       :on-exceed="handleExceed">
     <template #trigger>
-     <el-button type="primary">上传</el-button>
+     <el-button type="primary">选择文件</el-button>
     </template>
-    <el-button class="ml-3" type="success" @click="uploadFile">
-      upload to server
+    <el-button class="ml-3" type="success" v-if="fileList.length>0" @click="uploadFile">
+      上传
     </el-button>
   </el-upload>
 
@@ -42,6 +42,8 @@ const handleRemove = (file) => {
 import {genFileId} from 'element-plus'
 import type {UploadInstance, UploadRawFile} from 'element-plus'
 
+let showUploadBtn = ref(false)
+
 
 const upload = ref<UploadInstance>()
 const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
@@ -49,6 +51,7 @@ const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
   const file = files[0] as UploadRawFile
   file.uid = genFileId()
   upload.value!.handleStart(file)
+  showUploadBtn.value = true
 }
 
 const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {

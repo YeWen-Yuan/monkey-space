@@ -19,7 +19,7 @@ public class FileEntity {
     // 内存的file
     private File file;
     // OOS file
-    private OosFile oos_file;
+    private OssFile oos_file;
 
     public long fileSize() {
         return FileUtil.size(file);

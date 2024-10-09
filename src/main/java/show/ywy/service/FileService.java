@@ -1,6 +1,7 @@
 package show.ywy.service;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.json.JSONObject;
 import org.springframework.web.multipart.MultipartFile;
 import show.ywy.entity.FileEntity;
@@ -21,4 +22,9 @@ public abstract class FileService {
 
     @SaCheckLogin
     public abstract Result<JSONObject> upload(MultipartFile multipartFile);
+
+    protected void record(FileEntity fileEntity) {
+        String loginId = StpUtil.getLoginIdAsString();
+
+    }
 }

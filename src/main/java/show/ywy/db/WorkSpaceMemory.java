@@ -13,12 +13,12 @@ import java.util.List;
  */
 public class WorkSpaceMemory extends TimedCache<String, WorkSpace> {
 
-    public WorkSpaceMemory(long timeout) {
-        super(timeout);
+    public WorkSpaceMemory() {
+        super(1000 * 60 * 60L);
     }
 
     public static WorkSpaceMemory getInstance() {
-        return Singleton.get(WorkSpaceMemory.class, 1000 * 60 * 60L);
+        return Singleton.get(WorkSpaceMemory.class);
     }
 
     public static WorkSpace getWorkSpace(String key) {
