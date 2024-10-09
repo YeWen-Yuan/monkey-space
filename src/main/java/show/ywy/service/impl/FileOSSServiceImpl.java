@@ -1,7 +1,5 @@
 package show.ywy.service.impl;
 
-import cn.hutool.core.io.IoUtil;
-import cn.hutool.json.JSONObject;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
@@ -14,11 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import show.ywy.config.OosConfig;
 import show.ywy.entity.FileEntity;
-import show.ywy.result.Result;
 import show.ywy.service.FileService;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -26,13 +23,13 @@ import java.io.InputStream;
  * @author yzs
  */
 @Service("OSSFileService")
-public class FileOOSServiceImpl extends FileService {
+public class FileOSSServiceImpl extends FileService {
 
     @Resource
     private OosConfig oosConfig;
 
     @Override
-    public Result<JSONObject> upload(MultipartFile file)  {
+    public boolean upload(FileEntity fileEntity, MultipartFile file) {
         try {
             EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
             OSS ossClient = new OSSClientBuilder().build(oosConfig.getEndpoint(), credentialsProvider);
@@ -50,11 +47,11 @@ public class FileOOSServiceImpl extends FileService {
         } catch (ClientException | IOException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return true;
     }
 
     @Override
-    public void download(FileEntity fileEntity, HttpServletResponse response) {
+    public File download(FileEntity fileEntity) {
         System.out.println("download");
         EnvironmentVariableCredentialsProvider credentialsProvider;
         try {
@@ -68,12 +65,6 @@ public class FileOOSServiceImpl extends FileService {
             OSSObject ossObject = ossClient.getObject(oosConfig.getBucketName(), fileEntity.getFileName());
             // 读取文件内容。
             InputStream objectContent = ossObject.getObjectContent();
-            response.setContentType("application/octet-stream");
-            response.setHeader("Content-Disposition", "attachment;filename=" + fileEntity);
-            response.setCharacterEncoding("utf-8");
-            IoUtil.writeUtf8(response.getOutputStream(), true, objectContent);
-            // ossObject对象使用完毕后必须关闭，否则会造成连接泄漏，导致请求无连接可用，程序无法正常工作。
-            ossObject.close();
         } catch (OSSException oe) {
             System.out.println("Caught an OSSException, which means your request made it to OSS, "
                     + "but was rejected with an error response for some reason.");
@@ -91,10 +82,12 @@ public class FileOOSServiceImpl extends FileService {
                 ossClient.shutdown();
             }
         }
+
+        return new File("");
     }
 
     @Override
-    public Result<JSONObject> delete(String fileName) {
-        return null;
+    public boolean delete(FileEntity fileName) {
+        return false;
     }
 }

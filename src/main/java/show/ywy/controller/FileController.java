@@ -36,7 +36,7 @@ public class FileController {
     @PostMapping("delete")
     @ResponseBody
     public Result<JSONObject> deleteFile(@RequestBody FileEntity data) {
-        return fileServiceMap.get(data.getFileService()).delete(data.getFileName());
+        return fileServiceMap.get(data.getFileService()).delete(data, data.getFileName());
     }
 
 }
