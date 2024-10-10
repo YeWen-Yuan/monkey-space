@@ -22,7 +22,7 @@ import java.io.IOException;
 @Service(FileSaveType.Name.LOCAL)
 public class FileLocalServiceImpl extends FileService {
 
-    private final String filePath = "D:/test/";
+    private final String filePath = System.getProperty("user.dir") + "/static/file/";
 
     @Override
     public boolean uploadImpl(FileEntity fileEntity, MultipartFile multipartFile) {
@@ -39,6 +39,7 @@ public class FileLocalServiceImpl extends FileService {
     @Override
     public void downloadImpl(FileEntity fileEntity, HttpServletResponse response) {
         String pathname = filePath + StpUtil.getLoginIdAsString() + "/" + fileEntity.getFileName();
+        jsonResponse(response, 200, pathname);
     }
 
     @Override

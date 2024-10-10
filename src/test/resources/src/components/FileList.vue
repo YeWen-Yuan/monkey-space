@@ -14,17 +14,17 @@
   </el-upload>
 
   <div class="clip" v-for="file in fileLists">
-    <div>{{ file.name }}</div>
+    <div>{{ file.fileName }}</div>
     <el-space class="margin-top-20">
-      <el-link type="success" @click="handleRemove(file)">下载</el-link>
+      <el-link type="success" @click="handleDownload(file)">下载</el-link>
       <el-link type="danger" @click="handleRemove(file)">删除</el-link>
     </el-space>
   </div>
 </template>
 <script lang="ts" setup>
 import {ref} from 'vue'
-import {ElMessage, ElMessageBox} from 'element-plus'
-import {fileUploadApi} from '@/api/file.api.js'
+import {fileUploadApi,deleteFileApi,downloadFileApi} from '@/api/file.api.js'
+import {defineEmits} from 'vue'
 
 import type {UploadProps, UploadUserFile} from 'element-plus'
 
@@ -35,8 +35,13 @@ let fileLists = defineModel('fileList', {
 
 const fileList = ref<UploadUserFile[]>([])
 
+let emits = defineEmits(['remove']);
+
 const handleRemove = (file) => {
   console.log(file)
+  deleteFileApi(file).then(res=>{
+    emits('remove')
+  })
 }
 
 import {genFileId} from 'element-plus'
@@ -54,13 +59,9 @@ const handleExceed: UploadProps['onExceed'] = (files, uploadFiles) => {
   showUploadBtn.value = true
 }
 
-const beforeRemove: UploadProps['beforeRemove'] = (uploadFile, uploadFiles) => {
-  return ElMessageBox.confirm(
-      `Cancel the transfer of ${uploadFile.name} ?`
-  ).then(
-      () => true,
-      () => false
-  )
+function handleDownload(file) {
+  console.log(file)
+  downloadFileApi(file)
 }
 
 function uploadFile() {
@@ -69,9 +70,8 @@ function uploadFile() {
   console.log(upload.value)
   fileUploadApi(valueElement.raw).then(response => {
     console.log(response);
-  }).catch(error => {
-    console.log(error);
-  });
+    emits('remove')
+  })
 }
 </script>
 

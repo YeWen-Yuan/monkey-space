@@ -21,11 +21,13 @@ intoCheck()
 
 function intoCheck() {
   // 判断URL是否合法
-  let access_check = urlCheck();
-  if (access_check) {
+  let route = useRoute();
+  let data = route?.query.id;
+  if (!!data) {
     intoWorkSpaceCheckApi(route.query.id, route.query.code).then(res => {
       if (res.code === 200) {
         clipboardHistory.value = res.data.data.clipboardHistory.map(item => item.text)
+        fileList.value = res.data.data.fileList
         visible.value = false
       } else if (res.code === 5008) {
         visible.value = false
@@ -80,7 +82,7 @@ function delWorkSpace() {
         </el-col>
         <el-col :span="12">
           <h3>文件交换列表</h3>
-          <file-list v-model:fileList="fileList"></file-list>
+          <file-list v-model:fileList="fileList" @remove="intoCheck"></file-list>
         </el-col>
       </el-row>
     </div>

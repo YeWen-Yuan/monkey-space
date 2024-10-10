@@ -26,6 +26,11 @@ public class Result<T> implements Serializable {
         return result;
     }
 
+    public static class Magic {
+        public static String CODE = "code";
+        public static String MESSAGE = "message";
+    }
+
 
     public static <T> Result<T> error(ErrorCode errorCode) {
         return result(errorCode.getCode(), errorCode.getMessage(), null);

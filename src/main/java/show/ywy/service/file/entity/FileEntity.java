@@ -1,7 +1,7 @@
 package show.ywy.service.file.entity;
 
-import cn.hutool.core.io.FileUtil;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 
@@ -15,21 +15,31 @@ public class FileEntity {
     private String uuid;
     private String fileName;
     private Long size;
-    private boolean isMemoryFile = false;
     private FileSaveType fileSaveType;
     // 内存的file
     private File file;
     // OOS file
     private OssFile oos_file;
 
+    public FileEntity() {
+    }
+
+    public FileEntity(MultipartFile file) {
+        this.fileName = file.getOriginalFilename();
+        this.size = file.getSize();
+    }
+
     public long fileSize() {
-        return FileUtil.size(file);
+        return file == null ? 0L : file.length();
     }
 
     public FileSaveType getFileSaveType() {
         if (fileSaveType != null) {
             return fileSaveType;
         }
-        return fileSize() / 1024 / 1024 > 10 ? FileSaveType.LOCAL : FileSaveType.MEMORY;
+        boolean b = fileSize() / 1024 / 1024 > 10;
+        FileSaveType fileSaveType1 = b ? FileSaveType.LOCAL : FileSaveType.MEMORY;
+        setFileSaveType(fileSaveType1);
+        return fileSaveType1;
     }
 }

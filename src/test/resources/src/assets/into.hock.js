@@ -7,8 +7,6 @@ export function showDialog() {
 }
 
 export function urlCheck() {
-    let route = useRoute();
-    let data = route.query.id;
-    return !!data;
+
 }
 
