@@ -12,18 +12,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import show.ywy.config.OosConfig;
 import show.ywy.service.file.entity.FileEntity;
+import show.ywy.service.file.entity.FileSaveType;
 import show.ywy.service.file.service.FileService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
  * @author yzs
  */
-@Service("OSSFileService")
+@Service(FileSaveType.Name.OOS)
 public class FileOSSServiceImpl extends FileService {
 
     @Resource
@@ -83,8 +83,6 @@ public class FileOSSServiceImpl extends FileService {
                 ossClient.shutdown();
             }
         }
-
-        return new File("");
     }
 
     @Override

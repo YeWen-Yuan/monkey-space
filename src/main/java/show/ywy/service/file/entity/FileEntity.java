@@ -16,6 +16,7 @@ public class FileEntity {
     private String fileName;
     private Long size;
     private boolean isMemoryFile = false;
+    private FileSaveType fileSaveType;
     // 内存的file
     private File file;
     // OOS file
@@ -25,5 +26,10 @@ public class FileEntity {
         return FileUtil.size(file);
     }
 
-
+    public FileSaveType getFileSaveType() {
+        if (fileSaveType != null) {
+            return fileSaveType;
+        }
+        return fileSize() / 1024 / 1024 > 10 ? FileSaveType.LOCAL : FileSaveType.MEMORY;
+    }
 }

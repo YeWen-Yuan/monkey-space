@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 public abstract class FileService extends WorkSpaceMemoryService {
 
     public static String choiceFileService(FileEntity fileEntity) {
-        return fileEntity.fileSize() / 1024 / 1024 < 100 ? "localFileService" : "OSSFileService";
+        return fileEntity.getFileSaveType().service();
     }
 
     @SaCheckLogin
