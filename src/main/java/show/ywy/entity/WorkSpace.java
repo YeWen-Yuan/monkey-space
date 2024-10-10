@@ -1,6 +1,7 @@
 package show.ywy.entity;
 
 import lombok.Data;
+import show.ywy.service.file.entity.FileEntity;
 
 import java.util.ArrayList;
 import java.util.List;

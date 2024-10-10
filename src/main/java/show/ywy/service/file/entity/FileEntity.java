@@ -1,4 +1,4 @@
-package show.ywy.entity;
+package show.ywy.service.file.entity;
 
 import cn.hutool.core.io.FileUtil;
 import lombok.Data;
@@ -25,12 +25,5 @@ public class FileEntity {
         return FileUtil.size(file);
     }
 
-    public static String getFileService(long size) {
-        return size / 1024 / 1024 < 100 ? "localFileService" : "OSSFileService";
-    }
-
-    public String getFileService() {
-        return getFileService(fileSize());
-    }
 
 }

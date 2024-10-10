@@ -1,4 +1,4 @@
-package show.ywy.entity;
+package show.ywy.service.file.entity;
 
 /**
  * @author yzs

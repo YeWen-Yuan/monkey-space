@@ -5,9 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import show.ywy.entity.FileEntity;
+import show.ywy.service.file.entity.FileEntity;
 import show.ywy.result.Result;
-import show.ywy.service.FileService;
+import show.ywy.service.file.service.FileService;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -25,18 +25,18 @@ public class FileController {
     @PostMapping("upload")
     @ResponseBody
     public Result<JSONObject> uploadFile(@RequestParam("file") MultipartFile file) {
-        return fileServiceMap.get(FileEntity.getFileService(file.getSize())).upload(file);
+        return fileServiceMap.get(FileService.choiceFileService(new FileEntity())).upload(file);
     }
 
     @PostMapping("download")
     public void downloadFile(@RequestBody FileEntity data, HttpServletResponse response) {
-        fileServiceMap.get(data.getFileService()).download(data, response);
+        fileServiceMap.get(FileService.choiceFileService(data)).download(data, response);
     }
 
     @PostMapping("delete")
     @ResponseBody
     public Result<JSONObject> deleteFile(@RequestBody FileEntity data) {
-        return fileServiceMap.get(data.getFileService()).delete(data, data.getFileName());
+        return fileServiceMap.get(FileService.choiceFileService(data)).delete(data, data.getFileName());
     }
 
 }

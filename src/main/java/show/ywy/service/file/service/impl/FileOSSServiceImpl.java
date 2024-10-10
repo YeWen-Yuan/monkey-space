@@ -1,4 +1,4 @@
-package show.ywy.service.impl;
+package show.ywy.service.file.service.impl;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -11,10 +11,11 @@ import com.aliyuncs.exceptions.ClientException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import show.ywy.config.OosConfig;
-import show.ywy.entity.FileEntity;
-import show.ywy.service.FileService;
+import show.ywy.service.file.entity.FileEntity;
+import show.ywy.service.file.service.FileService;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,7 +30,7 @@ public class FileOSSServiceImpl extends FileService {
     private OosConfig oosConfig;
 
     @Override
-    public boolean upload(FileEntity fileEntity, MultipartFile file) {
+    public boolean uploadImpl(FileEntity fileEntity, MultipartFile file) {
         try {
             EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
             OSS ossClient = new OSSClientBuilder().build(oosConfig.getEndpoint(), credentialsProvider);
@@ -51,7 +52,7 @@ public class FileOSSServiceImpl extends FileService {
     }
 
     @Override
-    public File download(FileEntity fileEntity) {
+    public void downloadImpl(FileEntity fileEntity, HttpServletResponse response) {
         System.out.println("download");
         EnvironmentVariableCredentialsProvider credentialsProvider;
         try {
@@ -87,7 +88,7 @@ public class FileOSSServiceImpl extends FileService {
     }
 
     @Override
-    public boolean delete(FileEntity fileName) {
+    public boolean deleteImpl(FileEntity fileName) {
         return false;
     }
 }

@@ -1,4 +1,4 @@
-package show.ywy.service.impl;
+package show.ywy.service.file.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.io.FileUtil;
@@ -7,9 +7,10 @@ import cn.hutool.core.io.file.FileWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import show.ywy.entity.FileEntity;
-import show.ywy.service.FileService;
+import show.ywy.service.file.entity.FileEntity;
+import show.ywy.service.file.service.FileService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
@@ -23,7 +24,7 @@ public class FileLocalServiceImpl extends FileService {
     private final String filePath = "D:/test/";
 
     @Override
-    public boolean upload(FileEntity fileEntity, MultipartFile multipartFile) {
+    public boolean uploadImpl(FileEntity fileEntity, MultipartFile multipartFile) {
         try {
             String pathname = filePath + StpUtil.getLoginIdAsString() + "/" + multipartFile.getOriginalFilename();
             FileWriter.create(new File(pathname)).writeFromStream(multipartFile.getInputStream());
@@ -35,13 +36,12 @@ public class FileLocalServiceImpl extends FileService {
     }
 
     @Override
-    public File download(FileEntity fileEntity) {
+    public void downloadImpl(FileEntity fileEntity, HttpServletResponse response) {
         String pathname = filePath + StpUtil.getLoginIdAsString() + "/" + fileEntity.getFileName();
-        return new File(pathname);
     }
 
     @Override
-    public boolean delete(FileEntity fileName) {
+    public boolean deleteImpl(FileEntity fileName) {
         String pathname = filePath + StpUtil.getLoginIdAsString() + "/" + fileName;
         try {
             FileUtil.del(pathname);
